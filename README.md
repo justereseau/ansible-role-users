@@ -33,14 +33,15 @@ USERS_TO_REMOVE:
 This is an example of how to use this role:
 
 ```yaml
-    - hosts: servers
-        roles:
-            - { role: users,
-                USERS:
-                  - name: Bob
-                    username: bob
-                    public_keys: https://github.com/bob.keys
-                USERS_TO_REMOVE:
-                  - username: alice
-                }
+  - hosts: servers
+    roles:
+      - { role: users,
+        USERS:
+          - name: Bob
+            username: bob
+            public_keys: https://github.com/bob.keys
+        
+        USERS_TO_REMOVE:
+          - username: alice
+      }
 ```

@@ -1,0 +1,10 @@
+---
+# Users to install
+USERS:
+  - name: Bob
+    username: bob
+    public_keys: https://github.com/bob.keys
+
+# Users to remove
+USERS_TO_REMOVE:
+  - username: alice

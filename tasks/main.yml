@@ -1,0 +1,53 @@
+---
+# tasks file for users
+- name: Install dependencies
+  package:
+    name: sudo
+    state: present
+
+- name: Create users
+  user:
+    name: "{{ item.username }}"
+    comment: "{{ item.name }}"
+    groups: sudo
+    append: true
+    state: present
+    shell: /bin/bash
+  loop: '{{ USERS }}'
+  when: ansible_os_family == "Debian"
+
+- name: Create users
+  user:
+    name: "{{ item.username }}"
+    comment: "{{ item.name }}"
+    groups: wheel
+    append: true
+    state: present
+    shell: /bin/bash
+  loop: '{{ USERS }}'
+  when: ansible_os_family == "RedHat"
+
+- name: Remove undesired users
+  user:
+    name: "{{ item.username }}"
+    state: absent
+    remove: true
+  loop: '{{ USERS_TO_REMOVE }}'
+
+- name: Add keys to users.
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.public_keys }}"
+  loop: '{{ USERS }}'
+
+- name: Allow privilege escalation without password.
+  lineinfile:
+    dest: /etc/sudoers.d/30-{{ item.username }}
+    owner: root
+    group: root
+    mode: 0440
+    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
+    state: present
+    create: true
+    validate: 'visudo -cf %s'
+  loop: "{{ USERS }}"

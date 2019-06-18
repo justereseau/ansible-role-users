@@ -27,13 +27,6 @@
   loop: '{{ USERS }}'
   when: ansible_os_family == "RedHat"
 
-- name: Remove undesired users
-  user:
-    name: "{{ item.username }}"
-    state: absent
-    remove: true
-  loop: '{{ USERS_TO_REMOVE }}'
-
 - name: Add keys to users.
   authorized_key:
     user: "{{ item.username }}"
@@ -51,3 +44,10 @@
     create: true
     validate: 'visudo -cf %s'
   loop: "{{ USERS }}"
+
+- name: Remove undesired users
+  user:
+    name: "{{ item.username }}"
+    state: absent
+    remove: true
+  loop: '{{ USERS_TO_REMOVE }}'

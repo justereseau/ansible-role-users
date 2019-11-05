@@ -22,9 +22,9 @@
 - name: Add sudoers to sudo group.
   user:
     name: "{{ item.username }}"
-    groups: wheel
+    groups: "{{ sudoer_group }}"
     append: true
-  when: "{{ item.sudoer | default(false) }}"
+  when: item.sudoer | default(false)
   loop: '{{ USERS }}'
 
 - name: Add password to users.
@@ -51,7 +51,7 @@
     state: present
     create: true
     validate: 'visudo -cf %s'
-  when: "{{ item.sudoer | default(false) }}"
+  when: item.sudoer | default(false)
   loop: "{{ USERS }}"
 
 - name: Remove undesired users

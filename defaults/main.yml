@@ -9,7 +9,7 @@ USERS:
     username: bob
     public_keys: https://github.com/bob.keys
     password: "dssdsds"
-    sudoer: false
+    sudoer: true
 
 # Users to remove
 USERS_TO_REMOVE:

@@ -1,9 +1,15 @@
 ---
 # Users to install
+# public key and password are optionals
+# public key is a link to a keys file
+# password is the crypted value or the password (See doc here: https://docs.ansible.com/ansible/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module)
+# sudoer add the user to sudoer group
 USERS:
   - name: Bob
     username: bob
     public_keys: https://github.com/bob.keys
+    password: "dssdsds"
+    sudoer: false
 
 # Users to remove
 USERS_TO_REMOVE:

@@ -3,8 +3,8 @@
   include_vars: "{{ lookup('first_found', possible_files) }}"
   vars:
     possible_files:
-      - "{{ ansible_os_family }}.yaml"
-      - default.yaml
+      - "vars/distro/{{ ansible_os_family }}.yml"
+      - "vars/distro/default.yml"
 
 - name: Install dependencies
   package:

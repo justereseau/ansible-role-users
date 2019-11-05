@@ -14,7 +14,7 @@
 - name: Create users
   user:
     name: "{{ item.username }}"
-    comment: "{{ item.name | default('')}}"
+    comment: "{{ item.name | default('') }}"
     state: present
     shell: /bin/bash
   loop: '{{ USERS }}'

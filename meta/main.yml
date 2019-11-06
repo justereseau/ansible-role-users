@@ -1,7 +1,9 @@
 ---
 galaxy_info:
+  role_name: users
+  description: This role install or remove users on an host, with (or without) sudo right.
+
   author: Lucas Maurice
-  description: This role install or remove users on an host, with sudo right.
   company: DJLs
 
   license: MIT

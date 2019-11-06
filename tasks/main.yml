@@ -1,5 +1,11 @@
 ---
-# tasks file for users
+- name: Load a variable file based on the OS type, or a default if not found. Using free-form to specify the file.
+  include_vars: "{{ lookup('first_found', possible_files) }}"
+  vars:
+    possible_files:
+      - "vars/distro/{{ ansible_os_family }}.yml"
+      - "vars/distro/default.yml"
+
 - name: Install dependencies
   package:
     name: sudo
@@ -8,29 +14,31 @@
 - name: Create users
   user:
     name: "{{ item.username }}"
-    comment: "{{ item.name }}"
-    groups: sudo
-    append: true
+    comment: "{{ item.name | default('') }}"
     state: present
     shell: /bin/bash
   loop: '{{ USERS }}'
-  when: ansible_os_family == "Debian"
 
-- name: Create users
+- name: Add sudoers to sudo group.
   user:
     name: "{{ item.username }}"
-    comment: "{{ item.name }}"
-    groups: wheel
+    groups: "{{ sudoer_group }}"
     append: true
-    state: present
-    shell: /bin/bash
+  when: item.sudoer | default(false)
   loop: '{{ USERS }}'
-  when: ansible_os_family == "RedHat"
+
+- name: Add password to users.
+  user:
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+  when: item.password is defined
+  loop: '{{ USERS }}'
 
 - name: Add keys to users.
   authorized_key:
     user: "{{ item.username }}"
     key: "{{ item.public_keys }}"
+  when: item.public_keys is defined
   loop: '{{ USERS }}'
 
 - name: Allow privilege escalation without password.
@@ -43,6 +51,7 @@
     state: present
     create: true
     validate: 'visudo -cf %s'
+  when: item.sudoer | default(false)
   loop: "{{ USERS }}"
 
 - name: Remove undesired users

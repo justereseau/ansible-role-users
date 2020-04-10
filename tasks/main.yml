@@ -11,73 +11,12 @@
     name: sudo
     state: present
 
-- name: Create group list (primary)
-  set_fact:
-    groups_to_add: "{{ groups_to_add | default([]) | union([ item.group ]) }}"
+- name: Create groups
+  include_tasks: groups.yml
+
+- name: Add/Update an user
+  include_tasks: user.yml
   loop: '{{ USERS }}'
-
-- name: Create group list
-  set_fact:
-    groups_to_add: "{{ groups_to_add | default([]) | union( item.groups ) }}"
-  loop: '{{ USERS }}'
-
-- name: Ensure groups exist
-  group:
-    name: "{{ item }}"
-    state: present
-  loop: '{{ groups_to_add }}'
-
-- name: Create users with primary group and reset groups
-  user:
-    name: "{{ item.username }}"
-    comment: "{{ item.name | default('') }}"
-    group: "{{ item.group | default( item.username ) }}"
-    groups: []
-    shell: "{{ item.shell | default('/bin/bash') }}"
-    state: present
-  loop: '{{ USERS }}'
-
-- name: Add sudoers to sudo group.
-  user:
-    name: "{{ item.username }}"
-    groups: "{{ sudoer_group }}"
-    append: true
-  when: item.sudoer | default(false)
-  loop: '{{ USERS }}'
-
-- name: Add sudoers to other groups.
-  user:
-    name: "{{ item.username }}"
-    groups: "{{ item.groups }}"
-    append: true
-  loop: '{{ USERS }}'
-
-- name: Add password to users.
-  user:
-    name: "{{ item.username }}"
-    password: "{{ item.password }}"
-  when: item.password is defined
-  loop: '{{ USERS }}'
-
-- name: Add keys to users.
-  authorized_key:
-    user: "{{ item.username }}"
-    key: "{{ item.public_keys }}"
-  when: item.public_keys is defined
-  loop: '{{ USERS }}'
-
-- name: Allow privilege escalation without password.
-  lineinfile:
-    dest: /etc/sudoers.d/30-{{ item.username }}
-    owner: root
-    group: root
-    mode: 0440
-    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
-    state: present
-    create: true
-    validate: 'visudo -cf %s'
-  when: item.sudoer | default(false)
-  loop: "{{ USERS }}"
 
 - name: Remove undesired users
   user:

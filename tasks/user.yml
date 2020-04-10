@@ -8,7 +8,7 @@
     groups_to_add: "{{ groups_to_add + [ sudoer_group ] }}"
   when: item.sudoer | default(false)
 
-- name: Create users with primary group and reset groups
+- name: Create user with primary group and reset groups
   user:
     name: "{{ item.username }}"
     comment: "{{ item.name | default('') }}"
@@ -16,21 +16,18 @@
     groups: "{{ groups_to_add }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
     state: present
-  loop: '{{ USERS }}'
 
-- name: Add password to users.
+- name: Add password to user.
   user:
     name: "{{ item.username }}"
     password: "{{ item.password }}"
   when: item.password is defined
-  loop: '{{ USERS }}'
 
-- name: Add keys to users.
+- name: Add keys to user.
   authorized_key:
     user: "{{ item.username }}"
     key: "{{ item.public_keys }}"
   when: item.public_keys is defined
-  loop: '{{ USERS }}'
 
 - name: Allow privilege escalation without password.
   lineinfile:
@@ -43,4 +40,3 @@
     create: true
     validate: 'visudo -cf %s'
   when: item.sudoer | default(false)
-  loop: "{{ USERS }}"

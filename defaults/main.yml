@@ -9,6 +9,12 @@ USERS:
     username: bob
     public_keys: https://github.com/bob.keys
     password: "dssdsds"
+    group: bob
+    groups:
+      - group_a
+      - group_b
+      - group_c
+    shell: /bin/bash
     sudoer: true
 
 # Users to remove

@@ -11,12 +11,30 @@
     name: sudo
     state: present
 
-- name: Create users
+- name: Create group list (primary)
+  set_fact:
+    groups_to_add: "{{ groups_to_add | default([]) | union([ item.group ]) }}"
+  loop: '{{ USERS }}'
+
+- name: Create group list
+  set_fact:
+    groups_to_add: "{{ groups_to_add | default([]) | union( item.groups ) }}"
+  loop: '{{ USERS }}'
+
+- name: Ensure groups exist
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: '{{ groups_to_add }}'
+
+- name: Create users with primary group and reset groups
   user:
     name: "{{ item.username }}"
     comment: "{{ item.name | default('') }}"
+    group: "{{ item.group | default( item.username ) }}"
+    groups: []
+    shell: "{{ item.shell | default('/bin/bash') }}"
     state: present
-    shell: /bin/bash
   loop: '{{ USERS }}'
 
 - name: Add sudoers to sudo group.
@@ -25,6 +43,13 @@
     groups: "{{ sudoer_group }}"
     append: true
   when: item.sudoer | default(false)
+  loop: '{{ USERS }}'
+
+- name: Add sudoers to other groups.
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.groups }}"
+    append: true
   loop: '{{ USERS }}'
 
 - name: Add password to users.

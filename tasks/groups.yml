@@ -1,12 +1,12 @@
 ---
 - name: Create group list (primary)
   set_fact:
-    groups_to_add: "{{ groups_to_add | default([]) | union([ item.group ]) }}"
+    groups_to_add: "{{ groups_to_add | default([]) | union([ item.group | default(item.username) ]) }}"
   loop: '{{ USERS }}'
 
 - name: Create group list
   set_fact:
-    groups_to_add: "{{ groups_to_add | default([]) | union( item.groups ) }}"
+    groups_to_add: "{{ groups_to_add | default([]) | union( item.groups | default([]) ) }}"
   loop: '{{ USERS }}'
 
 - name: Ensure groups exist

@@ -16,27 +16,3 @@
     groups: "{{ groups_to_add }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
     state: present
-
-- name: Add password to user.
-  user:
-    name: "{{ item.username }}"
-    password: "{{ item.password }}"
-  when: item.password is defined
-
-- name: Add keys to user.
-  authorized_key:
-    user: "{{ item.username }}"
-    key: "{{ item.public_keys }}"
-  when: item.public_keys is defined
-
-- name: Allow privilege escalation without password.
-  lineinfile:
-    dest: /etc/sudoers.d/30-{{ item.username }}
-    owner: root
-    group: root
-    mode: 0440
-    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
-    state: present
-    create: true
-    validate: 'visudo -cf %s'
-  when: item.sudoer | default(false)

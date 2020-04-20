@@ -18,6 +18,36 @@
   include_tasks: user.yml
   loop: '{{ USERS }}'
 
+
+- name: Add password to user.
+  user:
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+  when: item.password is defined
+  loop: '{{ USERS }}'
+
+- name: Add keys to user.
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.public_keys }}"
+    exclusive: true
+    comment: Ansible provided key.
+  when: item.public_keys is defined
+  loop: '{{ USERS }}'
+
+- name: Allow privilege escalation without password.
+  lineinfile:
+    dest: /etc/sudoers.d/30-{{ item.username }}
+    owner: root
+    group: root
+    mode: 0440
+    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
+    state: present
+    create: true
+    validate: 'visudo -cf %s'
+  when: item.sudoer | default(false)
+  loop: '{{ USERS }}'
+
 - name: Remove undesired users
   user:
     name: "{{ item.username }}"

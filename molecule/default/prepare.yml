@@ -13,3 +13,10 @@
         name: alice
         shell: /bin/bash
         append: true
+
+    - name: Add an user to auto-remove.
+      user:
+        name: allan
+        groups: ['ansible_managed']
+        shell: /bin/bash
+        append: true

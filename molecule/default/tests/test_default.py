@@ -8,8 +8,8 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 def test_user_creation(host):
     os = host.system_info.distribution
-    user = host.user("bob")
 
+    user = host.user("bob")
     assert user.exists
     assert user.name == 'bob'
     assert user.gecos == 'Bob'
@@ -24,7 +24,14 @@ def test_user_creation(host):
     elif os == 'redhat':
         assert 'wheel' in groups
 
+    assert 'ansible_managed' in groups
+
 
 def test_user_remove(host):
     user = host.user('alice')
+    assert not user.exists
+
+
+def test_user_auto_remove(host):
+    user = host.user('allan')
     assert not user.exists

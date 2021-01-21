@@ -2,6 +2,8 @@
 - name: Converge
   hosts: all
   become: true
-
+  vars: 
+    USERS_ANSIBLE_GROUP_ENABLED: true
+    USERS_AUTODELETE_DELETE: true
   roles:
     - role: justereseau.users

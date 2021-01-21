@@ -1,0 +1,23 @@
+---
+- name: Create user list
+  set_fact:
+    users_supposed_to_exist: "{{ users_supposed_to_exist | default([]) | union([ item.username ]) }}"
+  changed_when: false
+  loop: '{{ USERS }}'
+
+- name: Determine existing users
+  shell: 'grep {{ USERS_ANSIBLE_GROUP }} /etc/group | cut -d: -f4 | tr "," "\n"'
+  changed_when: false
+  register: existing_users
+
+- name: Determine removed users
+  set_fact:
+    removed_users: "{{ existing_users.stdout_lines | default([]) | difference(users_supposed_to_exist) }}"
+  changed_when: false
+
+- name: Remove undesired users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  loop: '{{ removed_users }}'

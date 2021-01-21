@@ -18,7 +18,6 @@
   include_tasks: user.yml
   loop: '{{ USERS }}'
 
-
 - name: Add password to user.
   user:
     name: "{{ item.username }}"
@@ -54,3 +53,7 @@
     state: absent
     remove: true
   loop: '{{ USERS_TO_REMOVE }}'
+
+- name: User Autodelete
+  include_tasks: auto_delete_users.yml
+  when: USERS_AUTODELETE_DELETE

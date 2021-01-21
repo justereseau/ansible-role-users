@@ -1,6 +1,11 @@
 ---
 - name: Create group list (primary)
   set_fact:
+    groups_to_add: "{{ [USERS_ANSIBLE_GROUP] }}"
+  when: USERS_ANSIBLE_GROUP_ENABLED
+
+- name: Create group list (primary)
+  set_fact:
     groups_to_add: "{{ groups_to_add | default([]) | union([ item.group | default(item.username) ]) }}"
   loop: '{{ USERS }}'
 

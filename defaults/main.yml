@@ -20,3 +20,8 @@ USERS:
 # Users to remove
 USERS_TO_REMOVE:
   - username: alice
+
+# Append all ansible managed users to a dedicated group
+USERS_ANSIBLE_GROUP_ENABLED: false
+USERS_ANSIBLE_GROUP: ansible_managed
+USERS_AUTODELETE_DELETE: false

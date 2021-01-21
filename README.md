@@ -1,4 +1,4 @@
-# Ansible Role: Users [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/lucasmaurice/ansible-role-users.svg?branch=master)](https://travis-ci.org/lucasmaurice/ansible-role-users)
+# Ansible Role: Users [![Build Status](https://travis-ci.com/justereseau/ansible-role-users.svg?branch=master)](https://travis-ci.com/justereseau/ansible-role-users)
 
 This role install or remove users on an host, with sudo right, on a **Debian** or a **RedHat** host.
 

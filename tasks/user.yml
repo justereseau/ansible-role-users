@@ -8,6 +8,11 @@
     groups_to_add: "{{ groups_to_add + [ sudoer_group ] }}"
   when: item.sudoer | default(false)
 
+- name: Append ansible group to group list
+  set_fact:
+    groups_to_add: "{{ groups_to_add + [ USERS_ANSIBLE_GROUP ] }}"
+  when: USERS_ANSIBLE_GROUP_ENABLED
+
 - name: Create user with primary group and reset groups
   user:
     name: "{{ item.username }}"

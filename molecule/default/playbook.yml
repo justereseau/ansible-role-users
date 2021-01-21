@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - role: users
+    - role: justereseau.users

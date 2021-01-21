@@ -16,8 +16,8 @@ install:
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
   - cd ../
-  - mv ansible-role-$ROLE_NAME $ROLE_NAME
-  - cd $ROLE_NAME
+  - mv ansible-role-$ROLE_NAME justereseau.$ROLE_NAME
+  - cd justereseau.$ROLE_NAME
 
 script:
   - molecule --version
